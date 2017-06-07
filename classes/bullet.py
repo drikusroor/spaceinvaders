@@ -1,7 +1,6 @@
 import pygame
-from bullet import Bullet
 
-class Player(pygame.sprite.Sprite):
+class Bullet(pygame.sprite.Sprite):
     
     # Constructor. Pass in the color of the block,
     # and its x and y position
@@ -19,14 +18,5 @@ class Player(pygame.sprite.Sprite):
        # Update the position of this object by setting the values of rect.x and rect.y
        self.rect = self.image.get_rect()
 
-    def moveRight(self, pixels):
-        self.rect.x += pixels
- 
-    def moveLeft(self, pixels):
-        self.rect.x -= pixels
-
-    def shoot(self, bullet_group, width, height):
-        bullet = Bullet((255, 200, 50), width, height)
-        bullet.rect.x = self.rect.x + self.rect.width / 2 - width / 2
-        bullet.rect.y = self.rect.y - self.rect.height - height / 2
-        bullet_group.add(bullet)
+    def moveUp(self, pixels):
+        self.rect.y -= pixels

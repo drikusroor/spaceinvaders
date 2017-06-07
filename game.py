@@ -13,9 +13,13 @@ pygame.display.set_caption('Space Invaders')
 clock = pygame.time.Clock()
 
 player_group = pygame.sprite.Group()
+bullet_group = pygame.sprite.Group()
 
 PLAYER_WIDTH = 64
 PLAYER_HEIGHT = 32
+
+BULLET_WIDTH = 16
+BULLET_HEIGHT = 32
 
 player = Player( (100,100,0), PLAYER_WIDTH, PLAYER_HEIGHT)
 player.rect.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2
@@ -36,14 +40,18 @@ while done == False:
         player.moveLeft(32)
     if keys[pygame.K_RIGHT]:
         player.moveRight(32)
+    if keys[pygame.K_SPACE]:
+        player.shoot(bullet_group, BULLET_WIDTH, BULLET_HEIGHT)
 
     # write game logic here
     player_group.update()
+    bullet_group.update()
  
     # clear the screen before drawing
     screen.fill((255, 255, 255)) 
     # write draw code here
     player_group.draw(screen)
+    bullet_group.draw(screen)
  
     # display what has been drawn. this might change.
     pygame.display.update()

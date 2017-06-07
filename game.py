@@ -62,12 +62,15 @@ while done == False:
 
     print(frame < FPS / 2)
 
-    if(frame == 0):
+    if(frame % 4 == 0):
         for invader in invaders_group.sprites():
             invader.move(INVADER_WIDTH / FPS * 5)
 
     for bullet in bullet_group.sprites():
         bullet.moveUp(BULLET_SPEED)
+        for invader in invaders_group.sprites():
+            if pygame.sprite.collide_rect(bullet, invader):
+                invader.removeSelf(invaders_group)
 
     # write game logic here
     player_group.update()

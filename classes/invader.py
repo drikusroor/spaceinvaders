@@ -39,3 +39,6 @@ class Invader(pygame.sprite.Sprite):
 
     def moveLeft(self, pixels):
         self.rect.x -= pixels
+
+    def removeSelf(self, group):
+        self.remove(group)

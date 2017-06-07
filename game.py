@@ -20,6 +20,7 @@ PLAYER_HEIGHT = 32
 
 BULLET_WIDTH = 16
 BULLET_HEIGHT = 32
+BULLET_SPEED = 32
 
 player = Player( (100,100,0), PLAYER_WIDTH, PLAYER_HEIGHT)
 player.rect.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2
@@ -42,6 +43,9 @@ while done == False:
         player.moveRight(32)
     if keys[pygame.K_SPACE]:
         player.shoot(bullet_group, BULLET_WIDTH, BULLET_HEIGHT)
+
+    for bullet in bullet_group.sprites():
+        bullet.moveUp(BULLET_SPEED)
 
     # write game logic here
     player_group.update()

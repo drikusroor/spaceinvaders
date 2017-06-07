@@ -1,5 +1,6 @@
 import pygame
 from classes.player import Player
+from classes.invader import Invader
 
 # initialize game engine
 pygame.init()
@@ -14,7 +15,9 @@ clock = pygame.time.Clock()
 
 player_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
+invaders_group = pygame.sprite.Group()
 
+PLAYER_COLOR = (200, 50, 50)
 PLAYER_WIDTH = 64
 PLAYER_HEIGHT = 32
 
@@ -22,7 +25,18 @@ BULLET_WIDTH = 16
 BULLET_HEIGHT = 32
 BULLET_SPEED = 32
 
-player = Player( (100,100,0), PLAYER_WIDTH, PLAYER_HEIGHT)
+INVADER_COLOR = (50, 255, 50)
+INVADER_WIDTH = PLAYER_WIDTH / 2
+INVADER_HEIGHT = PLAYER_HEIGHT / 2
+
+for x in range(0, 8):
+    invader = Invader(INVADER_COLOR, INVADER_WIDTH, INVADER_HEIGHT)
+    invader.rect.x = INVADER_WIDTH * x * 2 + INVADER_WIDTH / 2
+    invader.rect.y = INVADER_HEIGHT
+    invaders_group.add(invader)
+
+
+player = Player( PLAYER_COLOR, PLAYER_WIDTH, PLAYER_HEIGHT)
 player.rect.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2
 player.rect.y = SCREEN_HEIGHT - PLAYER_HEIGHT * 2
 
@@ -50,12 +64,14 @@ while done == False:
     # write game logic here
     player_group.update()
     bullet_group.update()
+    invaders_group.update()
  
     # clear the screen before drawing
     screen.fill((255, 255, 255)) 
     # write draw code here
     player_group.draw(screen)
     bullet_group.draw(screen)
+    invaders_group.draw(screen)
  
     # display what has been drawn. this might change.
     pygame.display.update()

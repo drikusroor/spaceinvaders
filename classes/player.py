@@ -1,6 +1,6 @@
 import pygame
 
-class Block(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):
     
     # Constructor. Pass in the color of the block,
     # and its x and y position
@@ -17,3 +17,9 @@ class Block(pygame.sprite.Sprite):
        # Fetch the rectangle object that has the dimensions of the image
        # Update the position of this object by setting the values of rect.x and rect.y
        self.rect = self.image.get_rect()
+
+    def moveRight(self, pixels):
+        self.rect.x += pixels
+ 
+    def moveLeft(self, pixels):
+        self.rect.x -= pixels

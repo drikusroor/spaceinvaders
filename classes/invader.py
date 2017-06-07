@@ -28,6 +28,10 @@ class Invader(pygame.sprite.Sprite):
             self.counter = 0
 
     def move(self, pixels):
+        
+        if(self.counter == 0 or self.counter == self.counter_max / 2):
+            self.moveDown(pixels)
+
         if(self.counter < self.counter_max / 2):
             self.moveRight(pixels)
         else:
@@ -39,6 +43,9 @@ class Invader(pygame.sprite.Sprite):
 
     def moveLeft(self, pixels):
         self.rect.x -= pixels
+    
+    def moveDown(self, pixels):
+        self.rect.y += pixels
 
     def removeSelf(self, group):
         self.remove(group)

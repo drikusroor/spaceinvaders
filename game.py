@@ -12,6 +12,8 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Space Invaders')
 # initialize clock. used later in the loop.
 clock = pygame.time.Clock()
+FPS = 10
+frame = 0
 
 player_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
@@ -58,6 +60,12 @@ while done == False:
     if keys[pygame.K_SPACE]:
         player.shoot(bullet_group, BULLET_WIDTH, BULLET_HEIGHT)
 
+    print(frame < FPS / 2)
+
+    if(frame == 0):
+        for invader in invaders_group.sprites():
+            invader.move(INVADER_WIDTH / FPS * 5)
+
     for bullet in bullet_group.sprites():
         bullet.moveUp(BULLET_SPEED)
 
@@ -75,8 +83,12 @@ while done == False:
  
     # display what has been drawn. this might change.
     pygame.display.update()
-    # run at 20 fps
-    clock.tick(10)
+    # run at 10 fps
+    frame += 1
+    if(frame == FPS):
+        frame = 0
+
+    clock.tick(FPS)
  
 # close the window and quit
 pygame.quit()

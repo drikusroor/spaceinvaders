@@ -18,8 +18,24 @@ class Invader(pygame.sprite.Sprite):
        # Update the position of this object by setting the values of rect.x and rect.y
        self.rect = self.image.get_rect()
 
+       self.counter = 0
+       self.counter_max = 10
+       self.flip = 0
+
+    def incrementCounter(self):
+        self.counter += 1
+        if self.counter == self.counter_max:
+            self.counter = 0
+
+    def move(self, pixels):
+        if(self.counter < self.counter_max / 2):
+            self.moveRight(pixels)
+        else:
+            self.moveLeft(pixels)
+        self.incrementCounter()
+
     def moveRight(self, pixels):
         self.rect.x += pixels
 
     def moveLeft(self, pixels):
-        self.rect.x += pixels
+        self.rect.x -= pixels

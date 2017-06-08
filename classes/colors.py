@@ -1,6 +1,6 @@
 class Colors():
 
-    def __init__():
+    def __init__(self):
         self.red = (255, 0, 0)
         self.green = (0, 255, 0)
         self.blue = (0, 0, 255)
@@ -9,3 +9,6 @@ class Colors():
         self.turqoise = (0, 255, 255)
         self.black = (0, 0, 0)
         self.white = (255, 255, 255)
+
+        self.brown = (128, 64, 0)
+        self.grass = (100, 200, 64)

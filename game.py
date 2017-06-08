@@ -78,6 +78,11 @@ INVADER_COLOR = (50, 255, 50)
 INVADER_WIDTH = PLAYER_WIDTH / 2
 INVADER_HEIGHT = PLAYER_HEIGHT / 2
 
+# create event types
+move_side_event = pygame.USEREVENT + 1
+move_down_event = pygame.USEREVENT + 2
+reloaded_event  = pygame.USEREVENT + 3
+
 for x in range(0, 8):
     invader = Invader(INVADER_COLOR, INVADER_WIDTH, INVADER_HEIGHT)
     invader.rect.x = INVADER_WIDTH * x * 2 + INVADER_WIDTH / 2
@@ -99,13 +104,21 @@ while done == False:
         if event.type == pygame.QUIT:
             done = True
 
+        if event.type == reloaded_event:
+            # when the reload timer runs out, reset it
+            player.reloaded = True
+            pygame.time.set_timer(reloaded_event, 0)
+
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         player.moveLeft(8)
     if keys[pygame.K_RIGHT]:
         player.moveRight(8)
     if keys[pygame.K_SPACE]:
-        player.shoot(bullet_group, BULLET_WIDTH, BULLET_HEIGHT)
+        if player.reloaded == True:
+            player.shoot(bullet_group, BULLET_WIDTH, BULLET_HEIGHT)
+            pygame.time.set_timer(reloaded_event, 250)
 
     if(frame % 4 == 0):
         for invader in invaders_group.sprites():

@@ -19,6 +19,10 @@ class Player(pygame.sprite.Sprite):
        # Update the position of this object by setting the values of rect.x and rect.y
        self.rect = self.image.get_rect()
 
+       # Initial config for shooting
+       self.reloaded = True
+       self.shoot_rate = 5 # bullets per second
+
     def moveRight(self, pixels):
         self.rect.x += pixels
  
@@ -30,3 +34,4 @@ class Player(pygame.sprite.Sprite):
         bullet.rect.x = self.rect.x + self.rect.width / 2 - width / 2
         bullet.rect.y = self.rect.y - self.rect.height - height / 2
         bullet_group.add(bullet)
+        self.reloaded = False

@@ -2,6 +2,8 @@ import pygame
 from classes.player import Player
 from classes.invader import Invader
 from classes.colors import Colors
+import noise
+from noise import pnoise2
 
 # initialize game engine
 pygame.init()
@@ -35,27 +37,66 @@ RESOURCE_COLORS = {
     COAL: colors.black
 }
 
-# a list representing our tile map
-tilemap = [
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, DIRT,  GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, DIRT,  DIRT, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, DIRT, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL],
-    [GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL, GRASS, GRASS, GRASS, GRASS, COAL, COAL]
-]
+def InitTileMap(width, height):
+    rows = [None] * height
+    for idx, val in enumerate(rows):
+        rows[idx] = [None] * width
+    return rows
+
+def GetTileMap(seed=1):
+    tile_array = InitTileMap(MAP_WIDTH, MAP_HEIGHT)
+    octaves = 1
+    freq = 16.0 / octaves
+    half_size = 128.0
+    half_min_one = 127.0
+
+    for y in range(MAP_HEIGHT):
+        for x in range(MAP_WIDTH):
+            noise = int(pnoise2(
+                x / freq, 
+                y / freq, 
+                octaves,
+                # 0.5,  # persistence
+                # 2.0,  # lacunarity
+                # 1024, # repeatx
+                # 1024, # repeaty
+                base=seed # base
+                ) * half_min_one + half_size)
+            tile_array[y][x] = noise
+    
+    return tile_array
+
+DRAW_MODE = 'tiles'
+tilemap = GetTileMap(1)
+
+def GetNoiseTile(nn):
+    if nn < 100:
+        return WATER
+    elif nn < 170:
+        return GRASS
+    else:
+        return DIRT
+
+def GetNoiseColor(nn):
+    if nn > 255:
+        nn = 255
+    elif nn < 0:
+        nn = 0
+    return (nn, nn, nn)
+
+def GetTileColor(noise):
+    if DRAW_MODE == 'tiles':
+        noise = GetNoiseTile(noise)
+        return RESOURCE_COLORS[noise]
+    else:
+        return GetNoiseColor(noise)
+    return
+
+def DrawMap(rect_map):
+    for row in range(MAP_HEIGHT):
+        for column in range(MAP_WIDTH):
+            color = GetTileColor(tilemap[row][column])
+            pygame.draw.rect(screen, color, (column*TILE_SIZE, row*TILE_SIZE, TILE_SIZE, TILE_SIZE))
 
 # initialize clock. used later in the loop.
 clock = pygame.time.Clock()
@@ -140,11 +181,7 @@ while done == False:
 
     # draw tile map
     # loop through each row
-    for row in range(MAP_HEIGHT):
-        # loop through each column
-        for column in range(MAP_WIDTH):
-            # draw the resource at that position
-            pygame.draw.rect(screen, RESOURCE_COLORS[tilemap[row][column]], (column*TILE_SIZE, row*TILE_SIZE, TILE_SIZE, TILE_SIZE))
+    DrawMap(tilemap)
 
     # write draw code here
     player_group.draw(screen)

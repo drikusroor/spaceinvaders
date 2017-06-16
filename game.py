@@ -118,24 +118,44 @@ BULLET_SPEED = FPS / 2
 INVADER_COLOR = (50, 255, 50)
 INVADER_WIDTH = PLAYER_WIDTH / 2
 INVADER_HEIGHT = PLAYER_HEIGHT / 2
+INVADER_ROW_SPACE = PLAYER_HEIGHT
+invader_amount = 1
 
 # create event types
 move_side_event = pygame.USEREVENT + 1
 move_down_event = pygame.USEREVENT + 2
 reloaded_event  = pygame.USEREVENT + 3
 
-for x in range(0, 8):
-    invader = Invader(INVADER_COLOR, INVADER_WIDTH, INVADER_HEIGHT)
-    invader.rect.x = INVADER_WIDTH * x * 2 + INVADER_WIDTH / 2
-    invader.rect.y = INVADER_HEIGHT
-    invaders_group.add(invader)
+def AddNewInvaders(amount):
+    
+    global invader_amount
 
+    rows = []
+
+    for i in range(1, amount + 1):
+        rows.append(i)
+
+    for row in rows:
+        for x in range(0, 6):
+            invader = Invader(INVADER_COLOR, INVADER_WIDTH, INVADER_HEIGHT)
+            invader.rect.x = INVADER_WIDTH * x * 2 + INVADER_WIDTH / 2
+            invader.rect.y = (INVADER_HEIGHT + INVADER_ROW_SPACE) * row
+            print row
+            invaders_group.add(invader)
+    
+    invader_amount += 1
+
+AddNewInvaders(invader_amount)
 
 player = Player( PLAYER_COLOR, PLAYER_WIDTH, PLAYER_HEIGHT)
 player.rect.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2
 player.rect.y = SCREEN_HEIGHT - PLAYER_HEIGHT * 2
 
 player_group.add(player)
+
+# Score
+myfont = pygame.font.SysFont("Helvetica", 15, bold=True)
+score = 0
 
 # Loop until the user clicks close button
 done = False
@@ -170,6 +190,11 @@ while done == False:
         for invader in invaders_group.sprites():
             if pygame.sprite.collide_rect(bullet, invader):
                 invader.removeSelf(invaders_group)
+                score += 1
+    
+    if not invaders_group:
+        AddNewInvaders(invader_amount)
+                    
 
     # write game logic here
     player_group.update()
@@ -187,6 +212,10 @@ while done == False:
     player_group.draw(screen)
     bullet_group.draw(screen)
     invaders_group.draw(screen)
+
+    # lastly draw score and HUD
+    label = myfont.render("Score: " + str(score), 1, (255,255,255))
+    screen.blit(label, (20, 20))
  
     # display what has been drawn. this might change.
     pygame.display.update()

@@ -7,7 +7,7 @@ from noise import pnoise2
 
 # initialize game engine
 pygame.init()
-TILE_SIZE = 16
+TILE_SIZE = 32
 MAP_WIDTH = 24
 MAP_HEIGHT = 18
 
@@ -100,7 +100,7 @@ def DrawMap(rect_map):
 
 # initialize clock. used later in the loop.
 clock = pygame.time.Clock()
-FPS = 16
+FPS = 24
 frame = 0
 
 player_group = pygame.sprite.Group()
@@ -115,7 +115,7 @@ BULLET_WIDTH = 16
 BULLET_HEIGHT = 32
 BULLET_SPEED = FPS / 2
 
-INVADER_COLOR = (50, 255, 50)
+INVADER_COLOR = (255, 20, 200)
 INVADER_WIDTH = PLAYER_WIDTH / 2
 INVADER_HEIGHT = PLAYER_HEIGHT / 2
 INVADER_ROW_SPACE = PLAYER_HEIGHT
@@ -136,7 +136,7 @@ def AddNewInvaders(amount):
         rows.append(i)
 
     for row in rows:
-        for x in range(0, 6):
+        for x in range(0, 11):
             invader = Invader(INVADER_COLOR, INVADER_WIDTH, INVADER_HEIGHT)
             invader.rect.x = INVADER_WIDTH * x * 2 + INVADER_WIDTH / 2
             invader.rect.y = (INVADER_HEIGHT + INVADER_ROW_SPACE) * row
@@ -181,9 +181,9 @@ while done == False:
             player.shoot(bullet_group, BULLET_WIDTH, BULLET_HEIGHT)
             pygame.time.set_timer(reloaded_event, 250)
 
-    if(frame % 4 == 0):
+    if(frame % 3 == 0):
         for invader in invaders_group.sprites():
-            invader.move(INVADER_WIDTH / FPS * 5)
+            invader.move(INVADER_WIDTH / FPS * 10)
 
     for bullet in bullet_group.sprites():
         bullet.moveUp(BULLET_SPEED)

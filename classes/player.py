@@ -29,9 +29,10 @@ class Player(pygame.sprite.Sprite):
     def moveLeft(self, pixels):
         self.rect.x -= pixels
 
-    def shoot(self, bullet_group, width, height):
+    def shoot(self, width, height, all_group, bullet_group):
         bullet = Bullet((255, 200, 50), width, height)
         bullet.rect.x = self.rect.x + self.rect.width / 2 - width / 2
         bullet.rect.y = self.rect.y - self.rect.height - height / 2
+        all_group.add(bullet)
         bullet_group.add(bullet)
         self.reloaded = False

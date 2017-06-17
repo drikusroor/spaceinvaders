@@ -103,6 +103,7 @@ clock = pygame.time.Clock()
 FPS = 24
 frame = 0
 
+all_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 invaders_group = pygame.sprite.Group()
@@ -140,7 +141,7 @@ def AddNewInvaders(amount):
             invader = Invader(INVADER_COLOR, INVADER_WIDTH, INVADER_HEIGHT)
             invader.rect.x = INVADER_WIDTH * x * 2 + INVADER_WIDTH / 2
             invader.rect.y = (INVADER_HEIGHT + INVADER_ROW_SPACE) * row
-            print row
+            all_group.add(invader)
             invaders_group.add(invader)
     
     invader_amount += 1
@@ -151,6 +152,7 @@ player = Player( PLAYER_COLOR, PLAYER_WIDTH, PLAYER_HEIGHT)
 player.rect.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2
 player.rect.y = SCREEN_HEIGHT - PLAYER_HEIGHT * 2
 
+all_group.add(player)
 player_group.add(player)
 
 # Score
@@ -178,7 +180,7 @@ while done == False:
         player.moveRight(8)
     if keys[pygame.K_SPACE]:
         if player.reloaded == True:
-            player.shoot(bullet_group, BULLET_WIDTH, BULLET_HEIGHT)
+            player.shoot(BULLET_WIDTH, BULLET_HEIGHT, all_group, bullet_group)
             pygame.time.set_timer(reloaded_event, 250)
 
     if(frame % 3 == 0):
